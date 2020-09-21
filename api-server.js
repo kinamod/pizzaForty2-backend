@@ -9,13 +9,14 @@ const jwksRsa = require("jwks-rsa");
 
 const app = express();
 
-const port = process.env.API_PORT;
+const port = process.env.PORT;
 const appOrigin = process.env.APP_ORIGIN;
 const audience = process.env.AUTH0_AUDIENCE;
 const issuer = process.env.AUTH0_ISSUER;
 
 if (!issuer || !audience) {
-  throw new Error("Please make sure that .env is in place and populated");
+  
+  throw new Error("Please make sure that .env is in place and populated: "+issuer);
 }
 
 app.use(morgan("dev"));
