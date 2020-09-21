@@ -1,0 +1,12 @@
+{
+    "env": {
+      "AUTH0_AUDIENCE": {
+        "description": "The audience env variable",
+        "generator": "https://pizza42.commands"
+      },
+      "AUTH0_ISSUER": {
+        "description": "The issue env variable",
+        "value": "https://dev-kinamod-01.eu.auth0.com/"
+      }
+    }
+  }
