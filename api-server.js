@@ -10,7 +10,7 @@ const jwksRsa = require("jwks-rsa");
 const app = express();
 
 const port = process.env.PORT;
-const appOrigin = process.env.APP_ORIGIN;
+const appOrigin = process.env.APP_ORIGIN; 
 const audience = process.env.AUTH0_AUDIENCE;
 const issuer = process.env.AUTH0_ISSUER;
 
