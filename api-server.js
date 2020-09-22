@@ -10,7 +10,7 @@ const jwksRsa = require("jwks-rsa");
 const app = express();
 
 const port = process.env.PORT;
-const appOrigin = process.env.APP_ORIGIN; 
+const appOrigin = process.env.APP_ORIGIN.split(","); 
 const audience = process.env.AUTH0_AUDIENCE;
 const issuer = process.env.AUTH0_ISSUER;
 
@@ -43,7 +43,7 @@ app.get("/api/public-message", (req, res) => {
 });
 
 app.get("/api/authorize", checkJwt, (req, res) => {
-	
+	res.setHeader("Access-Control-Allow-Origin", "*");
   res.send({
     msg: "authorizing.",
   });
