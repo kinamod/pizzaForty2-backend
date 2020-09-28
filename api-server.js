@@ -57,9 +57,18 @@ app.get("/api/verify-email", checkJwt, (req, res) => {
   });
 });
 
-// app.get("/api/get-full-id", checkJwt, (req, res) => {
-//   getFullId(req, res);
-// });
+app.get("/api/get-full-id", checkJwt, (req, res) => {
+  getFullAuth0ID(req, res)
+    .then(function (response) {
+      testLogging("get fullid:\n" + JSON.stringify(response.data));
+      res.send(response.data);
+    })
+    .catch(function (error) {
+      testLogging(error);
+      return error;
+    });
+  //return res;
+});
 
 
 app.get("/api/order-pizza", checkJwt, (req, res) => {
@@ -140,9 +149,35 @@ function testLogging(message) {
   if (runningLocally) console.log(message);
 }
 
-//Methods for testing
+async function getFullAuth0ID(req, response) {
+  const url = `${issuer}api/v2/users/` + req.get("UserID");
+  testLogging("get full id - url: " + url);
 
-// async function getFullId(req, res) {
+  try {
+    //getting token to call auth0
+    const bearerToken = await getManagamentApiToken();
+
+    //using auth0 token to get the token auth0 has for googleAPI
+    testLogging("api token: " + bearerToken)
+    const config = {
+      url: url,
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + bearerToken,
+      }
+    };
+
+    response = await axios(config);
+    testLogging("getFullAuth0ID: response data: " + response.data);
+    return response;
+
+  } catch (err) {
+    testLogging("getFullAuth0ID: " + err)
+  }
+}
+
+//TESTING methids
+// async function getFullIdandTesting(req, res) {
 //   // testLogging(req);
 
 //   var url = "https://dev-kinamod-01.eu.auth0.com/api/v2/users/" + req.get("UserID");
