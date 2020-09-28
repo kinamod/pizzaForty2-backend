@@ -58,10 +58,10 @@ app.get("/api/verify-email", checkJwt, (req, res) => {
 });
 
 app.get("/api/get-full-id", checkJwt, (req, res) => {
-  getFullAuth0ID(req, res)
+  getFullAuth0ID(req)
     .then(function (response) {
       testLogging("get fullid:\n" + JSON.stringify(response.data));
-      res.send(response.data);
+      res.send({ Full_ID: response.data }); //keeps the default headers
     })
     .catch(function (error) {
       testLogging(error);
@@ -149,7 +149,7 @@ function testLogging(message) {
   if (runningLocally) console.log(message);
 }
 
-async function getFullAuth0ID(req, response) {
+async function getFullAuth0ID(req) {
   const url = `${issuer}api/v2/users/` + req.get("UserID");
   testLogging("get full id - url: " + url);
 
@@ -167,7 +167,7 @@ async function getFullAuth0ID(req, response) {
       }
     };
 
-    response = await axios(config);
+    const response = await axios(config);
     testLogging("getFullAuth0ID: response data: " + response.data);
     return response;
 
