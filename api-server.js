@@ -27,9 +27,8 @@ if (!issuer || !audience) {
 
 app.use(morgan("dev"));
 app.use(helmet());
-app.use(cors());
-// app.use(cors({ origin: appOrigin }));
-// app.options('*', cors({ origin: appOrigin }));
+app.use(cors({ origin: appOrigin }));
+app.options('*', cors({ origin: appOrigin }));
 
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
@@ -52,18 +51,17 @@ app.get("/api/public-message", (req, res) => {
   });
 });
 
-app.get("/api/verify-email", checkJwt, (req, res) => {
-  verifyEmail(req);
+app.get("/api/verify-email/:UserID", checkJwt, (req, res) => {
+  verifyEmail(req.params.UserID);
   res.send({
     msg: "We've sent you a verification email",
   });
 });
 
-app.get("/api/get-full-id", checkJwt, (req, res) => {
-  getFullAuth0ID(req)
+app.get("/api/get-full-id/:UserID", checkJwt, (req, res) => {
+  getFullAuth0ID(req.params.UserID)
     .then(function (response) {
-      // res.header('Access-Control-Allow-Origin', `${appOrigin}`);
-      res.send({ Full_ID: response.data }); //keeps the default headers
+      res.send({ msg: response.data });
     })
     .catch(function (error) {
       testLogging(error);
@@ -109,9 +107,9 @@ async function getManagamentApiToken() {
   }
 }
 
-async function verifyEmail(req) {
+async function verifyEmail(UserID) {
   try {
-    testLogging(req.get("UserID"));
+    testLogging(UserID);
     testLogging(req.headers);
 
     const bearerToken = await getManagamentApiToken();
@@ -122,7 +120,7 @@ async function verifyEmail(req) {
 
 
       const data = qs.stringify({
-        'user_id': req.get("UserID")//'auth0|5f6e42e04dbd480076764b8e'//TODO DSJ
+        'user_id': UserID//'auth0|5f6e42e04dbd480076764b8e'//TODO DSJ
       });
 
       const config = {
@@ -151,8 +149,8 @@ function testLogging(message) {
   if (runningLocally) console.log(message);
 }
 
-async function getFullAuth0ID(req) {
-  const url = `${issuer}api/v2/users/` + req.get("UserID");
+async function getFullAuth0ID(UserID) {
+  const url = `${issuer}api/v2/users/${UserID}`;
   testLogging("get full id - url: " + url);
 
   try {
