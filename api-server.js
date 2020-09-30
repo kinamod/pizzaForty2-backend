@@ -27,8 +27,9 @@ if (!issuer || !audience) {
 
 app.use(morgan("dev"));
 app.use(helmet());
-app.use(cors({ origin: appOrigin }));
-app.options('*', cors({ origin: appOrigin }));
+app.use(cors());
+// app.use(cors({ origin: appOrigin }));
+// app.options('*', cors({ origin: appOrigin }));
 
 const checkJwt = jwt({
   secret: jwksRsa.expressJwtSecret({
@@ -61,7 +62,7 @@ app.get("/api/verify-email", checkJwt, (req, res) => {
 app.get("/api/get-full-id", checkJwt, (req, res) => {
   getFullAuth0ID(req)
     .then(function (response) {
-      res.header('Access-Control-Allow-Origin', `${appOrigin}`);
+      // res.header('Access-Control-Allow-Origin', `${appOrigin}`);
       res.send({ Full_ID: response.data }); //keeps the default headers
     })
     .catch(function (error) {
