@@ -44,8 +44,8 @@ const checkJwt = jwt({
 });
 
 app.get("/api/public-message", (req, res) => {
-  testLogging(req.get("user_data"));
   testLogging(req.headers);
+  testLogging("res headers: \n" + JSON.stringify(res.headers));
   res.send({
     msg: "The API doesn't require an access token to share this message. I'll talk to anyone if you're able to click this button!",
   });
@@ -61,7 +61,7 @@ app.get("/api/verify-email", checkJwt, (req, res) => {
 app.get("/api/get-full-id", checkJwt, (req, res) => {
   getFullAuth0ID(req)
     .then(function (response) {
-      testLogging("get fullid:\n" + JSON.stringify(response.data));
+      res.header('Access-Control-Allow-Origin', `${appOrigin}`);
       res.send({ Full_ID: response.data }); //keeps the default headers
     })
     .catch(function (error) {
