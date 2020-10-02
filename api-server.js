@@ -67,7 +67,29 @@ app.get("/api/get-full-id/:UserID", checkJwt, (req, res) => {
       testLogging(error);
       return error;
     });
-  //return res;
+});
+
+app.get("/api/get-user-list/", checkJwt, (req, res) => {
+  getUserList()
+    .then(function (response) {
+      testLogging("RESPONSEDATA: - " + response.data);
+      res.send({ msg: response.data });
+    })
+    .catch(function (error) {
+      testLogging(error);
+      return error;
+    });
+});
+
+app.get("/api/get-user-roles/:UserID", checkJwt, (req, res) => {
+  getAuth0Roles(req.params.UserID)
+    .then(function (response) {
+      res.send({ msg: response.data });
+    })
+    .catch(function (error) {
+      testLogging(error);
+      return error;
+    });
 });
 
 
@@ -173,6 +195,60 @@ async function getFullAuth0ID(UserID) {
 
   } catch (err) {
     testLogging("getFullAuth0ID: " + err)
+  }
+}
+
+async function getUserList() {
+  const url = `${issuer}api/v2/users`;
+  testLogging("get user list - url: " + url);
+
+  try {
+    //getting token to call auth0
+    const bearerToken = await getManagamentApiToken();
+
+    //using auth0 token to get the token auth0 has for googleAPI
+    testLogging("api token: " + bearerToken)
+    const config = {
+      url: url,
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + bearerToken,
+      }
+    };
+
+    const response = await axios(config);
+    testLogging("getUserList: response data: " + response.data);
+    return response;
+
+  } catch (err) {
+    testLogging("getUserList: " + err)
+  }
+}
+
+async function getAuth0Roles(UserID) {
+  const url = `${issuer}api/v2/users/${UserID}/roles`;
+  testLogging("getAuth0Roles - url: " + url);
+
+  try {
+    //getting token to call auth0
+    const bearerToken = await getManagamentApiToken();
+
+    //using auth0 token to get the token auth0 has for googleAPI
+    testLogging("api token: " + bearerToken)
+    const config = {
+      url: url,
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + bearerToken,
+      }
+    };
+
+    const response = await axios(config);
+    testLogging("Auth0getAuth0RolesID: response data: " + JSON.stringify(response.data[0].name));
+    return response;
+
+  } catch (err) {
+    testLogging("getAuth0Roles: " + err)
   }
 }
 
