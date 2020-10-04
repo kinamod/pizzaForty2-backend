@@ -142,7 +142,7 @@ async function verifyEmail(UserID) {
 
 
       const data = qs.stringify({
-        'user_id': UserID//'auth0|5f6e42e04dbd480076764b8e'//TODO DSJ
+        'user_id': UserID
       });
 
       const config = {
